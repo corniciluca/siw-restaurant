@@ -1,0 +1,91 @@
+<html>
+	<head th:replace="fragments/fragments.html :: headerfiles"></head>
+	<body>
+		<div  class="d-flex h-100  flex-column text-center justify-content-center">
+		<div th:replace="fragments/fragments.html :: navBar"></div>
+		
+	      <div class="container" style="margin-top: 30rem;margin-bottom: 10rem;">
+	        <div class="row justify-content-center mb-5">
+	          <div class="col-12 col-md-8 col-lg-6 text-center">
+	
+	            <h2 class="mb-2 sub-title">
+	              Menu options
+	            </h2>
+	
+	          </div>
+	        </div>
+	        <div class="row mb-4">
+	          <div class="col">
+	
+	            <div class="nav nav-underline justify-content-center mb-6" id="menuTabs" role="tablist">
+	              <a class="nav-link fw-bold active" id="0Tab" data-bs-toggle="tab" href="#id0" role="tab" aria-controls="id0" aria-selected="true">
+	                Primi
+	              </a>
+	              <a class="nav-link fw-bold" id="1Tab" data-bs-toggle="tab" href="#id1" role="tab" aria-controls="id1" aria-selected="false">
+	                Secondi
+	              </a>
+	              <a class="nav-link fw-bold" id="2Tab" data-bs-toggle="tab" href="#id2" role="tab" aria-controls="id2">
+	                Contorni
+	              </a>
+	              <a class="nav-link fw-bold" id="3Tab" data-bs-toggle="tab" href="#id3" role="tab" aria-controls="id3">
+	                Bevande
+	              </a>
+	              <a class="nav-link fw-bold" id="4Tab" data-bs-toggle="tab" href="#id4" role="tab" aria-controls="id4">
+	                Dolci
+	              </a>
+	            </div>
+         	 </div>
+       	 	</div>
+	        <div class="row">
+				<div class="col-12">
+	
+	            <div class="tab-content" id="menuContent">
+					
+	              <div  th:each="dishesOfAType,stat : ${dishes}" class="tab-pane fade " th:classappend="${stat.index == 0} ? 'show active'"
+	              th:id="'id' +${stat.index}" role="tabpanel" th:aria-labelledby="${stat.index}+'Tab'">
+	                <div class="row">
+	                  <div th:each="dish : ${dishesOfAType}" class="col-md-6">
+	                    <div class="py-3 border-bottom">
+	                      <div class="row">
+	                        <div class="col-3 align-self-center">
+	
+	                          <div class="ratio ratio-1x1">
+	                            <img class="object-fit-cover" th:src="${dish.image}" alt="...">
+	                            <div  sec:authorize="hasAuthority('CUSTOMER')" th:if="${favoriteDishes}" class="d-flex">
+									<a  th:href="'/addOrRemoveFavorities/'+${userData.id}+'/'+${dish.id}"><i id="bookmark" class="bi mt-1" th:classappend="${!#sets.contains(favoriteDishes,dish)} ? 'bi-bookmark-fill' :bi-bookmark-star-fill"></i></a>
+								</div>
+	                          </div>
+	
+	                        </div>
+	                        <div class="col-7">
+	
+	                          <h5 th:text="${dish.name}" class="mb-2">titolo</h5>
+	
+	                          <p th:text="${dish.description}"  class="mb-0">
+								 descrizione
+	                          </p>
+	
+	                        </div>
+	                        <div class="col-2">
+	
+	                          <div th:text="${#numbers.formatDecimal(dish.price == null ? 0 : dish.price, 0, 2)}+'&euro;'" class="fs-4 font-serif text-center text-black">
+	                            15
+	                          </div>
+	
+	                        </div>
+	                      </div>
+	                    </div>
+	                  </div>
+	                 
+	                </div>
+	              </div>	              
+	            </div>
+	
+	          </div>
+	        </div>
+	      </div>
+		<div th:replace="fragments/base.html :: footer">
+		</div>
+	</body>
+	
+</html>

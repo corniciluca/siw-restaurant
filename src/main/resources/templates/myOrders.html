@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="fragments/fragments.html :: headerfiles">
+	</head>
+	<head
+	><script type="text/javascript" src="dist/js/jquery-1.10.2.js"></script>
+</head>
+	
+	<body>
+		<div  class="d-flex h-100  flex-column text-center justify-content-center">
+			<div th:replace="fragments/fragments.html :: navBar"></div>
+			 <div class="container" style="margin-top: 20rem;margin-bottom: 10rem;">
+				<div class="row justify-content-center mb-5">
+		          <div class="col-12 col-md-8 col-lg-6 text-center">
+		
+		            <h2 class="mb-2 sub-title">I miei ordini</h2>
+		          </div>
+	        	</div>
+	        	
+	        	<div>
+					<table class="mytable table align-middle mb-0 bg-white text-center">
+					  <thead class="bg-light thead-o">
+					    <tr>
+					      <th>#</th>
+					      <th>cod</th>
+					      <th>Ora prenotazione</th>
+					      <th>Ora consegna</th>
+					      <th>Cliente</th>
+					      <th>Fattorino</th>
+					      <th>Prezzo</th>
+					      <th>Stato</th>
+					      <th></th>
+					    </tr>
+					  </thead>
+					  <tbody >
+					    <tr th:if="${orders}" th:each="order,stat : ${orders}">
+					      <th class="col-sm-1" scope = "row"  th:text="${stat.index}">1</th>
+					      <td class="col-sm-1" th:text="${order.id}">2</td>
+					      <td class="col-sm-2" th:text="${#temporals.format(order.timeOfOrdering,'HH:mm')}">3</td>
+					      <td class="col-sm-2" th:text="${#temporals.format(order.timeOfDelivery,'HH:mm')}">3</td>
+					      <td class="col-sm-3" th:text="${order.customer.name}+' '+${order.customer.surname}">mario rossi</td>
+					      <td class="col-sm-3" th:if="${order.deliveryman}" th:text="${order.deliveryman.name}+' '+${order.deliveryman.surname}">rossi rossi</td>
+					      <td class="col-sm-3" th:unless="${order.deliveryman}"></td>
+					      <td class="col-sm-2" th:text="${#numbers.formatDecimal(order.totalPrice == null ? 0 : order.totalPrice, 0, 2)}+'&euro;'">23.4</td>
+					      <th:block th:switch="${#strings.toString(order.orderState)}">
+							  <div th:case="'IN_ATTESA'">
+					      		<td class="col-sm-2"><span class="badge text-bg-danger">In attesa di conferma</span></td>
+							  </div>
+							  <div th:case="'PRONTO'">
+					      		<td class="col-sm-2"><span class="badge text-bg-secondary">Pronto per spedizione</span></td>
+							  </div>
+							  <div th:case="'SPEDITO'">
+					      		<td class="col-sm-2" ><span class="badge text-bg-warning">Spedito</span></td>
+							  </div>
+							  <div th:case="'CONSEGNATO'">
+					      		<td class="col-sm-2"><span class="badge text-bg-success">Consegnato</span></td>
+							  </div>
+							  
+					      </th:block>
+					      <td>
+							  <div class="d-inline-flex">
+								  
+								<span th:if="${#strings.toString(order.orderState) == 'CONSEGNATO'}" class="mx-2">
+									<span th:if="${order.feedback == null}">
+										<a><i class="bi bi-pencil-square" data-bs-toggle="modal" th:data-bs-target="'#feedbackModal'+${order.id}" style="font-size: 1.8rem;"></i></a>
+										
+										<div class="modal fade" th:id="'feedbackModal'+${order.id}" tabindex="-1" th:aria-labelledby="'feedbackModal'+${order.id}" aria-hidden="true">
+										  <div class="modal-dialog">
+										    <div class="modal-content">
+										      <div class="modal-header">
+										        <h1 class="modal-title fs-5 text-center" id="exampleModalLabel">Feedback</h1>
+										        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										      </div>
+										      <div class="modal-body">
+												  
+								                <form th:action="@{'/leaveAFeedback/'+${order.id}}" th:object="${feedback}" method="POST">
+										          <div class="mb-3 d-flex flex-column">
+													<div class="d-flex mx-auto mb-3">
+											           <label for="rating" class="col-form-label">Votazione:</label>
+											            <div id="rating" class="star-widget px-1 pt-2 ">
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-5'+${order.id}" value="5"  th:field="*{rating}">
+													        <label th:for="'rate-5'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-4'+${order.id}" value="4"  th:field="*{rating}">
+													        <label th:for="'rate-4'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-3'+${order.id}" value="3" th:field="*{rating}">
+													        <label th:for="'rate-3'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-2'+${order.id}" value="2"  th:field="*{rating}">
+													        <label th:for="'rate-2'+${order.id}" class="bi bi-star-fill" ></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-1'+${order.id}" value="1" th:field="*{rating}">
+													        <label th:for="'rate-1'+${order.id}" class="bi bi-star-fill"></label>
+											          </div>
+										          </div>
+										          <div class="mb-3 d-flex">
+										            <textarea class="form-control" th:field="*{text}"></textarea>
+										          </div>
+										          </div>
+											      <div class="modal-footer">
+											        <button type="submit" class="btn btn-primary">Invia</button>
+											      </div>
+										        </form>
+						
+										     
+										    </div>
+										  </div>
+										</div>
+
+									</span>
+									<span th:unless="${order.feedback == null} ">
+										<a><i class="bi bi-pencil-square" data-bs-toggle="modal" th:data-bs-target="'#feedbackModalD'+${order.id}" style="font-size: 1.8rem;"></i></a>
+										
+										<div class="modal fade" th:id="'feedbackModalD'+${order.id}" tabindex="-1" th:aria-labelledby="'feedbackModalD'+${order.id}" aria-hidden="true">
+										  <div class="modal-dialog">
+										    <div class="modal-content">
+										      <div class="modal-header">
+										        <h1 class="modal-title fs-5 text-center" id="exampleModalLabel">Feedback</h1>
+										        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										      </div>
+										      <div class="modal-body">
+												                
+										          <div class="mb-3 d-flex flex-column">
+													<div class="d-flex mx-auto mb-3">
+											            <label for="rating" class="col-form-label">Votazione:</label>
+											            <div id="rating" class="star-widget px-1 pt-2 ">
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-5d'+${order.id}" value="5" disabled th:checked="${order.feedback.rating} == 5" >
+													        <label th:for="'rate-5d'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-4d'+${order.id}" value="4" disabled th:checked="${order.feedback.rating} == 4">
+													        <label th:for="'rate-4d'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-3d'+${order.id}" value="3" disabled th:checked="${order.feedback.rating} == 3">
+													        <label th:for="'rate-3d'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-2d'+${order.id}" value="2" disabled th:checked="${order.feedback.rating} == 2">
+													        <label th:for="'rate-2d'+${order.id}" class="bi bi-star-fill" ></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-1d'+${order.id}" value="1" disabled th:checked="${order.feedback.rating} == 1">
+													        <label th:for="'rate-1d'+${order.id}" class="bi bi-star-fill"></label>
+											          </div>
+										          </div>
+										          <div class="mb-3 d-flex">
+										            <textarea class="form-control" th:text="${order.feedback.text}" readonly></textarea>
+										          </div>
+										         </div>
+										        </div>					
+										     
+										    </div>
+										  </div>
+										</div>
+									</span>
+								</span>
+								<span class="mx-2">
+									<a th:if="${#strings.toString(order.orderState) == 'IN_ATTESA' or #strings.toString(order.orderState) == 'PRONTO' }" th:href="@{'/deleteOrder/'+${userData.id}+'/'+${order.id}}" >
+										<i class="bi bi-trash3" style="font-size: 1.8rem;"></i></a>
+								</span>
+								<span class="mx-2">
+									<a th:href="@{'/modifyOrder/'+${order.id}}"><i class="bi bi-sliders" style="font-size: 1.8rem;"></i></a>
+								</span>
+							  	
+					     	  </div>
+					      </td>
+						</tr>
+					  </tbody>
+					</table>
+					<a class="btn-green btn btn-outline-primary mt-4" th:href="@{'/newOrder/'+${userData.id}}">Nuovo ordine</a>
+				</div>
+				
+				<div class = "alert-box">
+					<div th:if="${#fields.hasErrors('${feedback.*}')}" th:each="err : ${#fields.errors('${feedback.*}')}" class="alert alert-danger alert-dismissible fade show me-1 mb-1" role="alert">
+					  	<strong  th:text="${err}">Errore</strong>
+					  	<button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+			 	</div>
+				
+				
+				
+				
+			 </div>
+			<div th:replace="fragments/base.html :: footer"></div>
+		</div>
+
+	</body>
+	
+</html>

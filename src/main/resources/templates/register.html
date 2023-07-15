@@ -1,0 +1,97 @@
+<html>
+	<head th:replace="fragments/fragments.html :: headerfiles"></head>
+	
+	<body>
+		<div  class="d-flex h-100  flex-column text-center justify-content-center">
+		<div th:replace="fragments/fragments.html :: navBar"></div>
+		
+	    <div class="container" style="margin-top: 20rem;margin-bottom: 10rem;">
+			<div class="row justify-content-center mb-5">
+	          <div class="col-12 col-md-8 col-lg-6 text-center">
+	
+	            <h2 class="mb-2 sub-title">Register</h2>
+	          </div>
+	        </div>
+	        <div style="max-width: 50%;" class="row mx-auto">
+	        	<form th:action="@{/register}" method="POST">
+					<div class="row gx-3">
+		                <div class="row mx-auto">
+							<div class="col">
+						
+				                  <div class="mb-3">
+	    							<input id="usernameId" name="username" type="text" class="form-control" placeholder="username" th:classappend="${#fields.hasErrors('credentials.username')} ? is-invalid" th:field="${credentials.username}" required>
+							        <div th:if="${#fields.hasErrors('credentials.username')}" id="usernameId" class="invalid-feedback">
+									  <span th:errors="${credentials.username}"></span>
+									</div>				                  	
+				                  </div>
+
+				                  <div class="mb-3">
+		   							<input type="text" id="nameId" class="form-control" placeholder="Nome" aria-label="Nome" th:classappend="${#fields.hasErrors('customer.name')} ? is-invalid" th:field="${customer.name}" required>
+		  							<div th:if="${#fields.hasErrors('customer.name')}" id="nameId" class="invalid-feedback">
+									  <span th:errors="${customer.name}"></span>
+									</div>
+				                  </div>
+				                  
+				                  <div class="mb-3">
+	    						   <input name="email" id="emailId" type="email" class="form-control" placeholder="email" th:classappend="${#fields.hasErrors('customer.email')} ? is-invalid" th:field="${customer.email}" required>
+	    						   <div th:if="${#fields.hasErrors('customer.email')}" id="emailId" class="invalid-feedback">
+									  <span th:errors="${customer.email}"></span>
+								   </div>
+				                  </div>
+			                  </div>
+			                  <div class="col">
+								   <div class="mb-3">
+	    							<input name="password" id="passwordId" type="password" class="form-control" placeholder="Password" th:classappend="${#fields.hasErrors('credentials.password')} ? is-invalid" th:field="${credentials.password}" required>
+	  								<div th:if="${#fields.hasErrors('credentials.password')}" id="passwordId" class="invalid-feedback">
+									  <span th:errors="${credentials.password}"></span>
+								    </div>
+				                  </div>
+				                  <div class="mb-3">
+		    						<input type="text" id="surnameId" class="form-control" placeholder="Cognome" aria-label="Cognome" th:classappend="${#fields.hasErrors('customer.surname')} ? is-invalid" th:field="${customer.surname}" required>
+		    						<div th:if="${#fields.hasErrors('customer.surname')}" id="surnameId" class="invalid-feedback">
+									  <span th:errors="${customer.surname}"></span>
+								    </div>
+				                  </div>
+				                   
+				                  <div class="mb-3">
+				                    <input type="tel" id="phoneId" class="form-control" placeholder="N. Telefono" aria-label="PhoneNumber" th:classappend="${#fields.hasErrors('customer.phoneNumber')} ? is-invalid" th:field="${customer.phoneNumber}" required>
+		  							<div th:if="${#fields.hasErrors('customer.phoneNumber')}" id="phoneId" class="invalid-feedback">
+									  <span th:errors="${customer.phoneNumber}"></span>
+								    </div>
+				                  </div>
+			                  </div>
+								<div class="mb-3">
+				                    <input type="text"  id="addressId" class="form-control" placeholder="Indirizzo" aria-label="Indirizzo" th:classappend="${#fields.hasErrors('customer.address')} ? is-invalid" th:field="${customer.address}" required>
+		  							<div th:if="${#fields.hasErrors('customer.address')}" id="addressId" class="invalid-feedback">
+									  <span th:errors="${customer.address}"></span>
+								    </div>
+				                  
+				                  </div>
+			                </div>
+			                <div class="col text-center mt-3">
+			                  <button class="btn-green btn btn-outline-primary text-dark" type="submit">
+		               			 Registrati
+		             		  </button>
+			             </div>
+		                
+				</form>
+	        </div>
+	    	</div>
+			</div>
+			<div class = "alert-box">
+				<div th:if="${#fields.hasErrors('${customer.*}')}" th:each="err : ${#fields.errors('${customer.*}')}" class="alert alert-danger alert-dismissible fade show me-1 mb-1" role="alert">
+				  	<strong  th:text="${err}">Errore</strong>
+				  	<button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+				<div th:if="${#fields.hasErrors('${credentials.*}')}" th:each="err : ${#fields.errors('${credentials.*}')}" class="alert alert-danger alert-dismissible fade show me-1 mb-1" role="alert">
+				  	<strong  th:text="${err}">Errore</strong>
+				  	<button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			</div>
+	       <div th:replace="fragments/base.html :: footer"></div>
+		</div>
+		
+
+	</body>
+	
+</html>

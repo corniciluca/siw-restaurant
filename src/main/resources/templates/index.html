@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="fragments/fragments.html :: headerfiles"></head>
+	
+	<body class=" body-w">
+		<div  class="d-flex h-100  flex-column text-center justify-content-center">
+			<div class="background"> </div>
+			<div th:replace="fragments/base.html :: navBar"></div>
+			<div class="cover-container d-flex mx-auto p-3 flex-column vh-100 justify-content-center align-items-center">	
+			 
+			  <main class="px-3 mt-5">
+				  <div class="d-inline-flex mb-4">				  	
+						<i style="color: #f5a637;" class="d-flex bi bi-star-fill me-1 mt-1"></i>
+						<div id="rating-text" class="mt-1">
+							<span>Rating  </span>
+							<span class="ms-1" >5</span>
+							<span class="">/</span>
+							<span style="color: #f5a637;" th:text="${rating == 0 ? 0 : #numbers.formatDecimal(rating, 0, 2)}"></span>
+					  	</div>
+				   </div>
+			    <h1 class="title">Restaurant</h1>
+			    <p class = "mt-2 mb-4"> La ricerca inizia con la scelta di produttori che possano garantire massimi livelli standard qualitativi, attraverso un controllo diretto della filiera produttiva con la consegna di prodotti freschi e genuini</p>
+			    <p><a class="btn-green btn btn-outline-primary text-white" href="/menu">
+	                vai al menù
+	             </a></p>
+			  </main>
+		
+		</div>
+		<div th:replace="fragments/base.html :: footer"></div>
+		</div>
+	</body>
+	
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head th:replace="fragments/fragments.html :: headerfiles"></head>
+	
+	<body>
+		<div  class="d-flex h-100  flex-column text-center justify-content-center">
+			<div th:replace="fragments/fragments.html :: navBar"></div>
+			 <div class="container d-flex flex-column justify-content-around vh-100" style="margin-top: 20rem;margin-bottom: 10rem;">
+				<div class ="d-flex flex-row justify-content-around">
+					<div class ="d-flex ">
+						<a class = "tooltip-icon" data-bs-custom-class="custom-tooltip" data-bs-toggle="tooltip" data-bs-placement="bottom" th:data-bs-title="'Ordini in consegna : ' + ${numDeliveringOrders}"><i class="fa-solid fa-truck "></i></a>
+					</div>
+					<div class ="d-flex">
+						<a class = "tooltip-icon"  data-bs-custom-class="custom-tooltip" data-bs-toggle="tooltip" data-bs-placement="bottom" th:data-bs-title="'Ordini consegnato : ' + ${numDeliveredOrders}"><i class="fa-solid fa-truck-ramp-box"></i></a>
+					</div>
+					<div class ="d-flex ">
+						<a class = "tooltip-icon"  data-bs-custom-class="custom-tooltip" data-bs-toggle="tooltip" data-bs-placement="bottom" th:data-bs-title="'Valutazione fattorino :'+${rating == 0 ? 0 : #numbers.formatDecimal(rating, 0, 2)}"><i class="bi bi-star-fill " ></i></a>
+					</div>
+				</div>
+				
+	        	
+	        	<div>
+					<h2 class="mb-4 sub-title">Ordini disponibili/In consegna</h2>
+					<table class="table align-middle mb-0 bg-white text-center">
+					  <thead class="bg-light thead-o">
+					    <tr>
+					      <th>#</th>
+					      <th>cod</th>
+					      <th>Cliente</th>
+					      <th>Ora di emanazione</th>
+					      <th>Prezzo</th>
+					      <th>Stato</th>
+					      <th></th>
+					    </tr>
+					  </thead>
+					  <tbody >
+					    <tr th:if="${readyOrders}" th:each="order,stat : ${readyOrders}">
+					      <th class="col-sm-1" scope = "row"  th:text="${stat.index}">1</th>
+					      <td class="col-sm-1" th:text="${order.id}">2</td>
+					      <td class="col-sm-1" th:text="${order.customer.name}+' '+${order.customer.surname}">2</td>
+					      <td class="col-sm-2" th:text="${#temporals.format(order.timeOfOrdering,'HH:mm')}">3</td>
+					      <td class="col-sm-2" th:text="${#numbers.formatDecimal(order.totalPrice == null ? 0 : order.totalPrice, 0, 2)}+'&euro;'">23.4</td>
+					      <td class="col-sm-2" >
+							  <span class="badge text-bg-secondary">Pronto per spedizione</span>
+						  </td>
+					      <td > <a th:href="@{'/deliveryman/takeOrder/'+${userData.id}+'/'+${order.id}}" class="btn-green btn btn-outline-primary">Prendi ordine</a>
+					      </td>
+					      <td></td>
+						</tr>
+						 <tr th:if="${deliveringOrders}" th:each="order,stat : ${deliveringOrders}">
+					      <th class="col-sm-1" scope = "row"  th:text="${stat.index}">1</th>
+					      <td class="col-sm-1" th:text="${order.id}">2</td>
+					      <td class="col-sm-1" th:text="${order.customer.name}+' '+${order.customer.surname}">2</td>
+					      <td class="col-sm-2" th:text="${#temporals.format(order.timeOfOrdering,'HH:mm')}">3</td>
+					      <td class="col-sm-2" th:text="${#numbers.formatDecimal(order.totalPrice == null ? 0 : order.totalPrice, 0, 2)}+'&euro;'">23.4</td>
+							<th:block th:switch="${#strings.toString(order.orderState)}">
+							  <div th:case="'SPEDITO'">
+					      		<td class="col-sm-2" ><span class="badge text-bg-warning">Spedito</span></td>
+							  </div>
+							  <div th:case="'CONSEGNATO'">
+					      		<td class="col-sm-2"><span class="badge text-bg-success">Consegnato</span></td>
+							  </div>
+							  
+					      </th:block>
+					      <td ><a th:href="@{'/deliveryman/orderDelivered/'+${userData.id}+'/'+${order.id}}" class="btn-green btn btn-outline-primary">Consegnato</a>
+					      </td>
+						</tr>
+					  </tbody>
+					</table>
+				</div>
+				
+	        	<div>
+					<h2 class="mb-4 sub-title">Ordini Consegnati</h2>
+					<table class="table align-middle mb-0 bg-white text-center">
+					  <thead class="bg-light thead-o">
+					    <tr>
+					      <th>#</th>
+					      <th>cod</th>
+					      <th>Ora di emanazione</th>
+					      <th>Ora di consegna</th>
+					      <th>cliente</th>
+					      <th>fattorino</th>
+					      <th>Prezzo</th>
+					      <th>Stato</th>
+					      <th></th>
+					    </tr>
+					  </thead>
+					  <tbody >
+					    <tr th:if="${deliveredOrders}" th:each="order,stat : ${deliveredOrders}">
+					      <th class="col-sm-1" scope = "row"  th:text="${stat.index}">1</th>
+					      <td class="col-sm-1" th:text="${order.id}">2</td>
+					      <td class="col-sm-2" th:text="${#temporals.format(order.timeOfOrdering,'HH:mm')}">3</td>
+					      <td class="col-sm-2" th:text="${#temporals.format(order.timeOfDelivery,'HH:mm')}">3</td>
+					      <td class="col-sm-1" th:text="${order.customer.name}+' '+${order.customer.surname}">mario rossi</td>
+					      <td class="col-sm-1" th:text="${order.deliveryman.name}+' '+${order.deliveryman.surname}">rossi rossi</td>
+					      <td class="col-sm-2" th:text="${#numbers.formatDecimal(order.totalPrice == null ? 0 : order.totalPrice, 0, 2)}+'&euro;'">23.4</td>
+						  <th:block th:switch="${#strings.toString(order.orderState)}">
+							  <div th:case="'PRONTO'">
+					      		<td class="col-sm-2"><span class="badge text-bg-secondary">Pronto per spedizione</span></td>
+							  </div>
+							  <div th:case="'SPEDITO'">
+					      		<td class="col-sm-2" ><span class="badge text-bg-warning">Spedito</span></td>
+							  </div>
+							  <div th:case="'CONSEGNATO'">
+					      		<td class="col-sm-2"><span class="badge text-bg-success">Consegnato</span></td>
+							  </div>
+					      </th:block>
+					      <td>
+							  <span th:unless="!${order.feedback}">
+										<a><i class="bi bi-pencil-square" data-bs-toggle="modal" th:data-bs-target="'#feedbackModal'+${order.id}" style="font-size: 1.8rem;"></i></a>
+										
+										<div class="modal fade" th:id="'feedbackModal'+${order.id}" tabindex="-1" th:aria-labelledby="'feedbackModal'+${order.id}" aria-hidden="true">
+										  <div class="modal-dialog">
+										    <div class="modal-content">
+										      <div class="modal-header">
+										        <h1 class="modal-title fs-5 text-center" id="exampleModalLabel">Feedback</h1>
+										        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										      </div>
+										      <div class="modal-body">
+												                
+										          <div class="mb-3 d-flex flex-column">
+													<div class="d-flex mx-auto mb-3">
+											            <label for="rating" class="col-form-label">Votazione:</label>
+											             <div id="rating" class="star-widget px-1 pt-2 ">
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-5d'+${order.id}" value="5" disabled th:checked="${order.feedback.rating} == 5" >
+													        <label th:for="'rate-5d'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-4d'+${order.id}" value="4" disabled th:checked="${order.feedback.rating} == 4">
+													        <label th:for="'rate-4d'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-3d'+${order.id}" value="3" disabled th:checked="${order.feedback.rating} == 3">
+													        <label th:for="'rate-3d'+${order.id}" class="bi bi-star-fill"></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-2d'+${order.id}" value="2" disabled th:checked="${order.feedback.rating} == 2">
+													        <label th:for="'rate-2d'+${order.id}" class="bi bi-star-fill" ></label>
+													        <input type="radio" th:name="'rate'+${order.id}" th:id="'rate-1d'+${order.id}" value="1" disabled th:checked="${order.feedback.rating} == 1">
+													        <label th:for="'rate-1d'+${order.id}" class="bi bi-star-fill"></label>
+											          </div>
+										          </div>
+										          <div class="mb-3 d-flex">
+										            <textarea class="form-control" th:text="${order.feedback.text}" readonly></textarea>
+										          </div>
+										         </div>
+										        </div>					
+										     
+										    </div>
+										  </div>
+										</div>
+									</span>
+								</span>
+					      </td>
+						</tr>
+					  </tbody>
+					</table>
+				</div>
+				
+				
+			 </div>
+			<div th:replace="fragments/base.html :: footer"></div>
+		</div>
+		<script>
+			const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+			const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+		</script>
+
+	</body>
+	
+</html>
